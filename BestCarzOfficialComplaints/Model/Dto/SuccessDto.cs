@@ -50,4 +50,21 @@ namespace BestCarzOfficialComplaints.Model.Dto
         public string State { get; set; }
         public string ImageUrl { get; set; }
     }
+    public class CreateCarsDto
+    {
+        public string Userid { get; set; }
+        public string Username { get; set; }
+        public string Model { get; set; }
+        public string Year { get; set; }
+    }
+    public class CarsDto
+    {
+        
+        public string? _id { get; set; }
+        public string Userid { get; set; }
+        public string Username { get; set; }
+        public string Model { get; set; }
+        public string Year { get; set; }
+     
+    }
 }

@@ -14,6 +14,8 @@ namespace BestCarzOfficialComplaints.MappingProfile
         {
             CreateMap<CreateUserDto, Users>();
             CreateMap<Users, ReturnedUsersDto>();
+            CreateMap<CreateCarsDto, Cars>();
+            CreateMap<Cars, CarsDto>();
         }
     }
    }
