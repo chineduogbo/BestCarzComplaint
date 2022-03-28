@@ -46,7 +46,7 @@ namespace BestCarzOfficialComplaints.Controllers
             return dblist;
         }
         [HttpPost]
-        public async Task<bool> CreateUser(CreateUserDto model)
+        public async Task<ReturnedUsersDto> CreateUser(CreateUserDto model)
         {
             Users mappeduser = _mapper.Map<Users>(model);
             mappeduser.active = true;
@@ -54,7 +54,7 @@ namespace BestCarzOfficialComplaints.Controllers
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("orderxconnection"));
 
             dbClient.GetDatabase("BestCarzLog").GetCollection<Users>("users").InsertOne(mappeduser);
-            return true;
+            return _mapper.Map<ReturnedUsersDto>(dbClient.GetDatabase("BestCarzLog").GetCollection<Users>("users").AsQueryable().Where(x => x.Username == model.Username).FirstOrDefault());
         }
         [HttpPut]
 
@@ -62,9 +62,9 @@ namespace BestCarzOfficialComplaints.Controllers
         {
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("orderxconnection"));
             var filter = Builders<Users>.Filter.Eq("_id", model._id);
-          //  var update = Builders<Users>.Update.Set("FavouriteBrands", model.FavouriteBrands);
+            //  var update = Builders<Users>.Update.Set("FavouriteBrands", model.FavouriteBrands);
             var updatefullname = Builders<Users>.Update.Set("FullName", model.FullName);
-           // dbClient.GetDatabase("BestCarzLog").GetCollection<Users>("users").UpdateOne(filter, update);
+            // dbClient.GetDatabase("BestCarzLog").GetCollection<Users>("users").(filter, update);
             dbClient.GetDatabase("BestCarzLog").GetCollection<Users>("users").UpdateOne(filter, updatefullname);
 
             return new JsonResult("updated successfully");
@@ -80,20 +80,15 @@ namespace BestCarzOfficialComplaints.Controllers
         //    return new SuccessDTO() { Id = 0, SuccessMessage = "Deleted Successfully" };
         //}
         [HttpPost]
-        public async Task<ReturnLoginDto> Login(LoginDto User)
+        public async Task<ReturnedUsersDto> Login(LoginDto User)
         {
             // TODO: Authenticate Admin with Database
             // If not authenticate return 401 Unauthorized
             // Else continue with below flow
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("orderxconnection"));
             var dblist = dbClient.GetDatabase("BestCarzLog").GetCollection<Users>("users").AsQueryable().Where(x => x.Username == User.Username && x.password == User.Password).FirstOrDefault();
-           if(dblist != null) { 
-                return new()
-                {
-                    Username = dblist.Username,
-                    FullName = dblist.FullName,
-                    UserId = dblist._id
-                };
+           if(dblist != null) {
+                return _mapper.Map<ReturnedUsersDto>(dblist);
             }
             return null;
         }

@@ -13,6 +13,7 @@ namespace BestCarzOfficialComplaints.MappingProfile
         public MappingProfile()
         {
             CreateMap<CreateUserDto, Users>();
+            CreateMap<Users, ReturnedUsersDto>();
         }
     }
    }
